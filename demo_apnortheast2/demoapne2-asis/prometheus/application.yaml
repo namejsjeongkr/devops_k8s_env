@@ -6,7 +6,7 @@ metadata:
 spec:
   project: infra
   source:
-    repoURL: https://github.com/svc-proto-dev/k8s-env
+    repoURL: https://github.com/namejsjeongkr/devops_k8s_env
     path: apps/prometheus/charts
     helm:
       valueFiles:

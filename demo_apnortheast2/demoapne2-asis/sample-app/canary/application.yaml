@@ -7,13 +7,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/svc-proto-dev/k8s-env
+    repoURL: https://github.com/namejsjeongkr/devops_k8s_env
     targetRevision: develop
     path: apps/sample-canary/charts
     helm:
       valueFiles:
-        - ../../../rbmd_apnortheast2/rbmdapne2-dfbv/sample-app/canary/values.yaml
-        - ../../../rbmd_apnortheast2/rbmdapne2-dfbv/sample-app/canary/image.yaml
+        - ../../../demod_apnortheast2/demodapne2-asis/sample-app/canary/values.yaml
+        - ../../../demod_apnortheast2/demodapne2-asis/sample-app/canary/image.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: canary
