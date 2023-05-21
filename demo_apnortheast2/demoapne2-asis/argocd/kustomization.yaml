@@ -4,7 +4,7 @@ namespace: argocd
 resources:
   - ../../../common/argocd
   - karpenter-provisioner.yaml
-patchesJson6902:
+patches:
   # Add the service account to external secret to get secret values
   - target:
       group: argoproj.io

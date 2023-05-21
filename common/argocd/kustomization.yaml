@@ -16,7 +16,7 @@ resources:
 
   # Register the bootstrap applications 
   - bootstrap.yaml
-patchesJson6902:
+patches:
   # Patch HA command option
   - target:
       group: apps
