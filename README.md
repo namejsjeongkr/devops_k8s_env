@@ -1,2 +1,2 @@
 # devops_k8s_env
-Configurations of k8s
+> This repository is easy to install initial kubernetes setting  

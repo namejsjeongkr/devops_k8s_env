@@ -1,0 +1,15 @@
+namespace: istio-system
+
+replicaCount: 1
+
+image: 
+  repo: prom/prometheus
+  tag: v2.34.0 # version string like v1.39.0 or a digest hash
+  digest: "" # use "sha256" if tag is a sha256 hash (do NOT prefix this value with a "@")
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+HelmChartVersion: prometheus-15.9.0
+
+IngressACM: arn:aws:acm:ap-northeast-2:398073895100:certificate/cf3e4222-28ea-40ea-920f-ff28a58a1012
+Ingresshost: "prometheus-rbmdapne2.rbmd.nergetdev.co.kr"

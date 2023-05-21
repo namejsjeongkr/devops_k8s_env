@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kiali
+  namespace: argocd
+spec:
+  project: infra
+  source:
+    repoURL: https://github.com/svc-proto-dev/k8s-env
+    path: apps/kiali/charts
+    helm:
+      valueFiles:
+      - ../../../rbmd_apnortheast2/rbmdapne2-dfbv/kiali/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    # syncOptions:
+    # - CreateNamespace=true

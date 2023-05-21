@@ -1,0 +1,86 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  {{- if .Values.datadog.enabled }}
+  labels:
+    tags.datadoghq.com/env: {{ .Values.env }}
+    tags.datadoghq.com/service: {{ .Values.appName }}
+    tags.datadoghq.com/version: {{ .Values.image.tag }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        version: stable
+        {{- if .Values.datadog.enabled }}
+        tags.datadoghq.com/env: {{ .Values.env }}
+        tags.datadoghq.com/service: {{ .Values.appName }}
+        tags.datadoghq.com/version: {{ .Values.image.tag }}
+        {{- end }}
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: {{ .Values.appName }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | toString }}
+          imagePullPolicy: Always
+          ports:
+            {{- range .Values.ports }}
+            - containerPort: {{ .port }}
+            {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.readinessProbe.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: {{ .Values.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.resources.enabled }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          {{- end }}
+          env:
+            {{- toYaml .Values.envVars | nindent 12 }}
+            {{- if .Values.datadog.enabled }}
+            - name: DD_ENV
+              value: {{ .Values.env }}
+            - name: DD_SERVICE
+              value: {{ .Values.appName }}
+            - name: DD_VERSION
+              value: {{ .Values.image.tag | toString }}
+            {{- end }}
+  strategy:
+    blueGreen:
+      autoPromotionEnabled: {{ .Values.autoPromotionEnabled }}
+      activeService: {{ .Values.appName }}-svc-active
+      previewService: {{ .Values.appName }}-svc-preview

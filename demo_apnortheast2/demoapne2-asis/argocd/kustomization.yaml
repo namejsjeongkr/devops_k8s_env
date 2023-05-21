@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - ../../../common/argocd
+  - karpenter-provisioner.yaml
+patchesJson6902:
+  # Add the service account to external secret to get secret values
+  - target:
+      group: argoproj.io
+      version: v1alpha1
+      kind: Application
+      name: external-secrets
+    path: patches/attach-external-secret-serviceaccount.yaml
+
+  # Add the bootstrap variables
+  - target:
+      group: argoproj.io
+      version: v1alpha1
+      kind: Application
+      name: bootstrap
+    path:  patches/add-bootstrap-variables.yaml

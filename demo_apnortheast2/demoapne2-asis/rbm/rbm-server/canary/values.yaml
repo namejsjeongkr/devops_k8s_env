@@ -1,0 +1,237 @@
+# Default values for canary services.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+### Default values for rbm-server.
+appName: rbm-server
+namespace: rbm
+env: rbmdapne2
+
+
+### Gateway, Virtual Service of istio Config
+host: rbm-server.rbmd.nergetdev.co.kr
+
+
+### Spring env Config
+envVars:
+  - name: spring.profiles.active
+    value: rbmdapne2
+
+
+### Pod Config
+replicaCount: 3
+
+podAnnotations: 
+  traffic.sidecar.istio.io/excludeOutboundPorts: "3310,7379"
+
+
+### HPA Config
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+
+### IRSA Config 
+serviceAccount:
+  enabled: true
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::398073895100:role/app-rbm
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "rbm-sa"
+
+
+### openapi Config
+InternalService:
+  enabled: true
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
+    #service.beta.kubernetes.io/aws-load-balancer-private-ipv4-addresses: 10.20.86.212, 10.20.106.37, 10.20.124.245
+    #service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  name: http
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+  protocol: TCP
+
+
+### Pod, Service ports Config
+ports:
+- name: http
+  port: 80
+  targetPort: 8080
+  protocol: TCP
+
+service:
+  type: ClusterIP
+  port: 80
+
+
+### Pod LifeCycle Config
+readinessProbe:
+  enabled: true
+  httpGet:
+  path: /actuator/health
+  port: 8080
+  periodSeconds: 10   # default value
+  timeoutSeconds: 1   # default value
+livenessProbe:
+  enabled: true
+  httpGet:
+  path: /actuator/health
+  port: 8080
+  initialDelaySeconds: 300
+  periodSeconds: 10   # default value
+  timeoutSeconds: 1   # default value
+  successThreshold: 1 # default value
+  failureThreshold: 3 # default value
+
+
+### Pod QoS Config
+resources: 
+  enabled: true
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 200m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 1Gi
+
+
+### Pod deployment strategies Config
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+### Pod Security Config
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+### Ingress Config
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    alb.ingress.kubernetes.io/actions.ssl-redirect: >-
+      {"Type": "redirect", "RedirectConfig":{ "Protocol": "HTTPS", "Port":
+      "443", "StatusCode": "HTTP_301"}}
+    alb.ingress.kubernetes.io/certificate-arn: >-
+      arn:aws:acm:ap-northeast-2:398073895100:certificate/cf3e4222-28ea-40ea-920f-ff28a58a1012
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+    alb.ingress.kubernetes.io/security-groups: sg-04707d5715c27b5a1, sg-0d6482e7655572c75
+    external-dns.alpha.kubernetes.io/hostname: "rbm-server.rbmd.nergetdev.co.kr"
+  hosts:
+    - http:
+      paths:
+        - backend:
+            service:
+              name: istio-ingressgateway
+              port:
+                number: 80
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+# datadog Config
+datadog:
+  enabled: true
+
+
+# PDB
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:
+
+
+# Canary Deployment Strategy
+canary:
+  # deployment steps
+  steps:
+    - setWeight: 20
+    - pause: {}
+    - setWeight: 50
+    - pause: {duration: 5m}
+    - setWeight: 100
+    - pause: {duration: 5m}
+  #  metric analysis to automate update promotion or rollback
+  analysis:
+    metrics:
+      - name: success-rate
+        interval: 10s
+        successCondition: result[0] > 0.90
+        failureLimit: 3
+        provider:
+          prometheus:
+            address: http://prometheus.istio-system:9090
+            query: |
+              sum(irate(
+                istio_requests_total{reporter="source",destination_service=~"{{args.service}}.{{args.namespace}}.svc.cluster.local",response_code!~"5.*"}[5m]
+              )) /
+              sum(irate(
+                istio_requests_total{reporter="source",destination_service=~"{{args.service}}.{{args.namespace}}.svc.cluster.local"}[5m]
+              ))
+
+# ServiceEntry
+serviceEntry:
+  https:
+    hosts:
+      - cpx-lgapi.bssstb.nerget.co.kr #compax
+      - cpx-auth.bssstb.nerget.co.kr #compax 인증(one-direction)
+      - sbxapi.lguplus.co.kr #ucube 통시 api
+      - chat.ucube.nergetdev.co.kr #채팅상담 개발(spectra)
+      - rest.ucube.nergetdev.co.kr #채팅서버 개발(spectra)
+      - rbm-server.rbmd.nergetdev.co.kr
+      - cdn.rbmd.nergetdev.co.kr #개발 s3
+      - notid.preprod.uplusdev.com #porg
+      - auth-dev.uplusdev.com #chewbacca
+      - sa.inicis.com #이니시스 url1
+      - fcsa.inicis.com #이니시스 url2
+      - kssa.inicis.com #이니시스 url3
+      - api.tosspayments.com #TOSS USIM 배송 결제
+      - www.googleapis.com #Google API
+  aws:
+    hosts:
+      - "*.ap-northeast-2.amazonaws.com"
+  db:
+    port: 5440
+    hosts:
+      - rbm-db.cto.internal
+      - privacy-db.cto.internal
+  redis:
+    port: 7379
+    hosts:
+      - apps-redis-cluster.cto.internal
+

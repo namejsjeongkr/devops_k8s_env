@@ -1,0 +1,3 @@
+image:
+  repository: 997192475770.dkr.ecr.ap-northeast-2.amazonaws.com/nerget-server
+  tag: dea2988e8

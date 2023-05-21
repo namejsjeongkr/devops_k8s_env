@@ -1,0 +1,23 @@
+# Source: kiali-server/templates/rolebinding-controlplane.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kiali-controlplane
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: kiali
+    app.kubernetes.io/name: kiali
+    app.kubernetes.io/instance: kiali
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: "kiali"
+    helm.sh/chart: {{ .Values.HelmChartVersion }}
+    app.kubernetes.io/version: {{ .Values.HelmAppVersion }}
+    version: {{ .Values.HelmAppVersion }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kiali-controlplane
+subjects:
+- kind: ServiceAccount
+  name: kiali
+  namespace: {{ .Values.namespace }}

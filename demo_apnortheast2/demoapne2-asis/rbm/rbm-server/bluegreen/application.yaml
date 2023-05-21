@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rbm
+  namespace: argocd
+  annotations:
+   notifications.argoproj.io/subscribe.on-deployed.slack: prj-rbm-dev-dax-alert
+   notifications.argoproj.io/subscribe.on-sync-succeeded.slack: prj-rbm-dev-dax-alert
+   notifications.argoproj.io/subscribe.on-sync-failed.slack: prj-rbm-dev-dax-alert
+   notifications.argoproj.io/subscribe.on-health-degraded.slack: prj-rbm-dev-dax-alert
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/svc-proto-dev/k8s-env
+    targetRevision: develop
+    path: apps/rbm-server-bluegreen/charts
+    helm:
+      valueFiles:
+        - ../../../rbmd_apnortheast2/rbmdapne2-dfbv/rbm/rbm-server/bluegreen/values.yaml
+        - ../../../rbmd_apnortheast2/rbmdapne2-dfbv/rbm/rbm-server/bluegreen/image.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rbm
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

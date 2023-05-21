@@ -1,0 +1,68 @@
+#https://istio.io/latest/docs/tasks/traffic-management/egress/egress-control/
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: https-serviceentry
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- with .Values.serviceEntry.https.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - number: 443
+      name: https
+      protocol: HTTPS
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+#https://istio.io/latest/docs/tasks/traffic-management/egress/wildcard-egress-hosts/
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: aws-endpoint-serviceentry
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- with .Values.serviceEntry.aws.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - number: 443
+      name: aws-endpoint
+      protocol: HTTPS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: db-serviceentry
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- with .Values.serviceEntry.db.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - number: {{ .Values.serviceEntry.db.port }}
+      name: db
+      protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: redis-serviceentry
+  namespace: {{ .Values.namespace }}
+spec:
+  {{- with .Values.serviceEntry.redis.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - number: {{ .Values.serviceEntry.redis.port }}
+      name: redis
+      protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL

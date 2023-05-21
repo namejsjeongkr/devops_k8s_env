@@ -1,0 +1,115 @@
+namespace: istio-system
+
+replicaCount: 1
+
+image: # see: https://quay.io/repository/kiali/kiali?tab=tags
+  repo: quay.io/kiali/kiali # quay.io/kiali/kiali
+  tag: v1.67.0 # version string like v1.39.0 or a digest hash
+  digest: "" # use "sha256" if tag is a sha256 hash (do NOT prefix this value with a "@")
+  pullPolicy: Always
+  pullSecrets: []
+
+HelmChartVersion: kiali-server-1.67.0
+HelmAppVersion: "v1.67.0"
+
+IngressACM: arn:aws:acm:ap-northeast-2:398073895100:certificate/cf3e4222-28ea-40ea-920f-ff28a58a1012
+Ingresshost: "kiali-rbmdapne2.rbmd.nergetdev.co.kr"
+IngressInBoundCIDR: 112.150.20.45/32, 122.46.32.111/32, 222.101.123.16/32, 211.185.89.95/32
+external_services:
+  prometheus:
+    # Prometheus service name is "prometheus" and is in the "istio-system" namespace
+    url: "http://prometheus.istio-system:9090/"
+
+oidcSecretsKey: /kiali/rbmdapne2/okta/secrets
+
+ConfigMapdata:
+  config: |
+    auth:
+          openid:
+            client_id: 0oa441j58gDU2n6ek697
+            domain: kiali-rbmdapne2.rbmd.nergetdev.co.kr
+            issuer_uri: https://lguplus.okta.com
+            username_claim: "email"
+            insecure_skip_verify_tls: true
+            disable_rbac: true
+          openshift:
+            client_id_prefix: kiali
+          strategy: openid
+        deployment:
+          accessible_namespaces:
+          - '**'
+          additional_service_yaml: {}
+          affinity:
+            node: {}
+            pod: {}
+            pod_anti: {}
+          configmap_annotations: {}
+          custom_secrets: []
+          host_aliases: []
+          hpa:
+            api_version: autoscaling/v2beta2
+            spec: {}
+          image_digest: ""
+          image_name: quay.io/kiali/kiali
+          image_pull_policy: Always
+          image_pull_secrets: []
+          ingress:
+            additional_labels: {}
+            class_name: nginx
+            override_yaml:
+              metadata: {}
+          ingress_enabled: false
+          instance_name: kiali
+          logger:
+            log_format: text
+            log_level: info
+            sampler_rate: "1"
+            time_field_format: 2006-01-02T15:04:05Z07:00
+          namespace: istio-system
+          node_selector: {}
+          pod_annotations: {}
+          pod_labels:
+            sidecar.istio.io/inject: "false"
+          priority_class_name: ""
+          replicas: 1
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          secret_name: kiali
+          security_context: {}
+          service_annotations: {}
+          service_type: ""
+          tolerations: []
+          view_only_mode: false
+        external_services:
+          custom_dashboards:
+            enabled: true
+          istio:
+            root_namespace: istio-system
+        identity:
+          cert_file: ""
+          private_key_file: ""
+        istio_namespace: istio-system
+        kiali_feature_flags:
+          certificates_information_indicators:
+            enabled: true
+            secrets:
+            - cacerts
+            - istio-ca-secret
+          clustering:
+            enabled: true
+          disabled_features: []
+          validations:
+            ignore:
+            - KIA1201
+        login_token:
+          signing_key: CHANGEME00000000
+        server:
+          metrics_enabled: true
+          metrics_port: 9090
+          port: 20001
+          web_root: /kiali
+        
