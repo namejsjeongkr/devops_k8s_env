@@ -57,7 +57,7 @@ spec:
     clusterDNS: ["172.20.0.10"]
     containerRuntime: containerd
   labels:
-    app: rbm
+    app: sample-app
   providerRef:
     name: spot
   ttlSecondsAfterEmpty: 30

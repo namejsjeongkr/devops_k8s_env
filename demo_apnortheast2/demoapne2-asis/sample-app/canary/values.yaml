@@ -7,10 +7,6 @@ appName: sample-app
 namespace: canary
 
 
-### Gateway, Virtual Service of istio Config
-host: sample-app.rbmd.nergetdev.co.kr
-
-
 ### Pod Config
 replicaCount: 3
 
