@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/namejsjeongkr/devops_k8s_env
-    targetRevision: develop
+    targetRevision: main
     path: apps/sample-canary/charts
     helm:
       valueFiles:

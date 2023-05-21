@@ -121,7 +121,7 @@ ingress:
       paths:
         - backend:
             service:
-              name: istio-ingressgateway
+              name: sample-app-svc
               port:
                 number: 80
   tls: []

@@ -10,14 +10,12 @@
       loadBalancerControllerlogLevel: debug
       repoURL: https://github.com/namejsjeongkr/devops_k8s_env
       targetRevision: main
-      istio:
-        enabled: true
       karpenter:
         enabled: true
         queueURL: https://sqs.ap-northeast-2.amazonaws.com/086230238707/demodapne2-khul-aws-node-termination-handler-queue
 - op: add
   path: /spec/source/repoURL
-  value: https://github.com/svc-proto-dev/k8s-env
+  value: https://github.com/namejsjeongkr/devops_k8s_env
 
 - op: add
   path: /spec/source/targetRevision
