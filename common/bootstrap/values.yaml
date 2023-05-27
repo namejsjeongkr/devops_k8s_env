@@ -1,0 +1,13 @@
+# Name of the cluster
+clusterName: ""
+# AWS account id
+accountId: ""
+# VPC name
+vpcName: ""
+# Cluster endpoint
+clusterEndpoint: ""
+# NodeGroup instanceProfile
+karpenter:
+  instanceProfile: ""
+  daemonset: ""
+  queueURL: ""

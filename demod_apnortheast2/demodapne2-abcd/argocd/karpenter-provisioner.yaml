@@ -1,0 +1,106 @@
+### on-demand
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: on-demand
+spec:
+  kubeletConfiguration:
+    clusterDNS: ["172.20.0.10"]
+    containerRuntime: containerd
+  labels:
+    nodetype: on-demand
+  providerRef:
+    name: on-demand
+  limits:
+    resources:
+      cpu: 1k
+      memory: 1000Gi
+  requirements:
+    # Include general purpose instance families
+    - key: eks.amazonaws.com/nodegroup
+      operator: In
+      values: ["demodapne2-khul-ng-ondemand"]
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["on-demand"]
+    - key: karpenter.k8s.aws/instance-family
+      operator: In
+      values: ["t3"]
+    - key: karpenter.k8s.aws/instance-size
+      operator: NotIn
+      values: ["nano","micro","small"]
+    - key: kubernetes.io/arch
+      operator: In
+      values: ["amd64"]
+    - key: topology.kubernetes.io/zone
+      operator: In
+      values: ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c"]
+    # - key: capacity-spread
+    #   operator: In
+    #   values:
+    #   - "1"
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: on-demand
+spec:
+  subnetSelector:
+    karpenter.sh/discovery: demodapne2-khul
+  securityGroupSelector:
+    karpenter.sh/discovery: demodapne2-khul
+  tags:
+    Name: demodapne2-khul-ondemand-karpenter
+---
+### spot
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: spot
+spec:
+  kubeletConfiguration:
+    clusterDNS: ["172.20.0.10"]
+    containerRuntime: containerd
+  labels:
+    app: sample-app
+  providerRef:
+    name: spot
+  ttlSecondsAfterEmpty: 30
+  limits:
+    resources:
+      cpu: 1k
+      memory: 1000Gi
+  requirements:
+    - key: eks.amazonaws.com/nodegroup
+      operator: In
+      values: ["demodapne2-khul-ng-spot"]
+    - key: karpenter.sh/capacity-type
+      operator: In
+      values: ["spot"]
+    - key: karpenter.k8s.aws/instance-family
+      operator: In
+      values: ["t3"]
+    - key: karpenter.k8s.aws/instance-size
+      operator: NotIn
+      values: ["nano","micro","small"]
+    - key: kubernetes.io/arch
+      operator: In
+      values: ["amd64"]
+    - key: topology.kubernetes.io/zone
+      operator: In
+      values: ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c"]
+    # - key: capacity-spread
+    #   operator: In
+    #   values: ["2", "3", "4", "5"]
+---
+apiVersion: karpenter.k8s.aws/v1alpha1
+kind: AWSNodeTemplate
+metadata:
+  name: spot
+spec:
+  subnetSelector:
+    karpenter.sh/discovery: demodapne2-khul
+  securityGroupSelector:
+    karpenter.sh/discovery: demodapne2-khul
+  tags:
+    Name: demodapne2-khul-spot-karpenter

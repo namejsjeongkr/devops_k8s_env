@@ -1,0 +1,14 @@
+# Add alb certificate annotation
+- op: add
+  path: /metadata/annotations/alb.ingress.kubernetes.io~1certificate-arn
+  value: arn:aws:acm:ap-northeast-2:086230238707:certificate/27acfc2d-9756-4389-b070-7f952149b37c
+
+# Add hostname annotation
+- op: add
+  path: /metadata/annotations/external-dns.alpha.kubernetes.io~1hostname
+  value: argocd-demodapne2.namejsjeongkr.com
+
+# Replace the host 
+- op: replace
+  path: /spec/rules/0/host
+  value: argocd-demodapne2.namejsjeongkr.com

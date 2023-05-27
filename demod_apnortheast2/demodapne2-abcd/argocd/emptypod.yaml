@@ -1,0 +1,54 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+   name: empty-pods
+value: -1
+globalDefault: false
+description: "Priority class used by pause-pods for overprovisioning."
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: other
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: empty-pods
+  namespace: other
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: empty-pods
+  template:
+    metadata:
+      labels:
+        run: empty-pods
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              run: empty-pods
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "karpenter.sh/capacity-type"
+                    operator: "In"
+                    values: ["spot"]
+      priorityClassName: empty-pods
+      containers:
+      - name: reserve-resources
+        image: k8s.gcr.io/pause
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 2.5Gi
+          limits:
+            cpu: 2000m
+            memory: 2.5Gi

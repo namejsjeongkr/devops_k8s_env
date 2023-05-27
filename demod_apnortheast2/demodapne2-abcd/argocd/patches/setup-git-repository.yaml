@@ -1,0 +1,4 @@
+# Add repository data in the ClusterSecretStore
+- op: add
+  path: /spec/target/template/data/url
+  value: https://github.com/namejsjeongkr/devops_k8s_env
