@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 ### Default values for sample-canary.
-appName: sample-bluegreen
+appName: sample-canary
 namespace: canary
 env: demodapne2
 
