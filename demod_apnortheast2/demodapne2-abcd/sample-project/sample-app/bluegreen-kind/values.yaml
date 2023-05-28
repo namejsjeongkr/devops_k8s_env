@@ -1,0 +1,91 @@
+### This is a YAML-formatted file.
+### Declare variables to be passed into your templates.
+
+### Default values for sample-bluegreen.
+appName: sample-bluegreen
+namespace: bluegreen
+env: demodapne2
+
+
+### Argo Rollout auto promote Config
+autoPromotionEnabled: false
+
+
+### Spring env Config
+envVars:
+  - name: spring.profiles.active
+    value: demodapne2
+
+
+### Pod Config
+replicaCount: 10
+
+podAnnotations:
+  # sidecar.istio.io/inject: "true"
+  # traffic.sidecar.istio.io/excludeOutboundPorts: "5440, 7379"
+
+
+### HPA Config
+autoscaling:
+  enabled: false
+  minReplicas: 10
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+
+### Pod, Service ports Config
+ports:
+- name: http
+  port: 80
+  targetPort: 8080
+  protocol: TCP
+  type: NodePort
+
+service:
+  type: ClusterIP
+  port: 80
+
+
+### Pod QoS Config
+resources: 
+  enabled: true
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 200m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 1Gi
+
+
+### Pod deployment strategies Config
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+### Pod Security Config
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+# PDB
+podDisruptionBudget:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  enabled: false
+  minAvailable:
+  maxUnavailable:
