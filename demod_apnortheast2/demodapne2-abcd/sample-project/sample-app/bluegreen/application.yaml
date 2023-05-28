@@ -18,6 +18,8 @@ spec:
     server: https://kubernetes.default.svc
     namespace: blugreen
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true

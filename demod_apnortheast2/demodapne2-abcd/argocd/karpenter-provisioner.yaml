@@ -19,7 +19,7 @@ spec:
     # Include general purpose instance families
     - key: eks.amazonaws.com/nodegroup
       operator: In
-      values: ["demodapne2-khul-ng-ondemand"]
+      values: ["demodapne2-nsnj-ng-ondemand"]
     - key: karpenter.sh/capacity-type
       operator: In
       values: ["on-demand"]
@@ -46,11 +46,11 @@ metadata:
   name: on-demand
 spec:
   subnetSelector:
-    karpenter.sh/discovery: demodapne2-khul
+    karpenter.sh/discovery: demodapne2-nsnj
   securityGroupSelector:
-    karpenter.sh/discovery: demodapne2-khul
+    karpenter.sh/discovery: demodapne2-nsnj
   tags:
-    Name: demodapne2-khul-ondemand-karpenter
+    Name: demodapne2-nsnj-ondemand-karpenter
 ---
 ### spot
 apiVersion: karpenter.sh/v1alpha5
@@ -73,7 +73,7 @@ spec:
   requirements:
     - key: eks.amazonaws.com/nodegroup
       operator: In
-      values: ["demodapne2-khul-ng-spot"]
+      values: ["demodapne2-nsnj-ng-spot"]
     - key: karpenter.sh/capacity-type
       operator: In
       values: ["spot"]
@@ -99,8 +99,8 @@ metadata:
   name: spot
 spec:
   subnetSelector:
-    karpenter.sh/discovery: demodapne2-khul
+    karpenter.sh/discovery: demodapne2-nsnj
   securityGroupSelector:
-    karpenter.sh/discovery: demodapne2-khul
+    karpenter.sh/discovery: demodapne2-nsnj
   tags:
-    Name: demodapne2-khul-spot-karpenter
+    Name: demodapne2-nsnj-spot-karpenter

@@ -2,11 +2,11 @@
   path: /spec/source/helm
   value:
     values: |
-      clusterName: demodapne2-khul
+      clusterName: demodapne2-nsnj
       accountId: "086230238707"
       vpcName: demod_apnortheast2
       awsRegion: ap-northeast-2
-      clusterEndpoint: https://E325B80A6F5BCD7C19C3598C0C298A1E.yl4.ap-northeast-2.eks.amazonaws.com
+      clusterEndpoint: https://4351D81E3031C7F9614C786DF0BCFB66.gr7.ap-northeast-2.eks.amazonaws.com
       loadBalancerControllerlogLevel: debug
       repoURL: https://github.com/namejsjeongkr/devops_k8s_env
       targetRevision: main
@@ -15,7 +15,7 @@
         enabled: true
       karpenter:
         enabled: true
-        queueURL: arn:aws:sqs:ap-northeast-2:086230238707:demodapne2-khul-aws-node-termination-handler-queue
+        queueURL: arn:aws:sqs:ap-northeast-2:086230238707:demodapne2-nsnj-aws-node-termination-handler-queue
       argoRollouts:
         ingressHost: argo-rollouts-demodapne2.namejsjeongkr.com
 - op: add

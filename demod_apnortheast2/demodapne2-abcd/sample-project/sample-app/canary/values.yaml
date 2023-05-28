@@ -35,7 +35,7 @@ autoscaling:
 serviceAccount:
   enabled: false
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations:
     eks.amazonaws.com/role-arn: IAM_ROLE_ARN
