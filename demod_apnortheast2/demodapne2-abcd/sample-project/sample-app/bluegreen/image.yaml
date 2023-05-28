@@ -1,3 +1,3 @@
 image:
-  repository: ECR_ARN
-  tag: TAG_NUM
+  repository: argoproj/rollouts-demo
+  tag: blue

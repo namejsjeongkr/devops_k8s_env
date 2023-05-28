@@ -12,12 +12,10 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.appName }}
-      version: stable
   template:
     metadata:
       labels:
         app: {{ .Values.appName }}
-        version: stable
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
