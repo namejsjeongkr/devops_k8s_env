@@ -1,14 +1,11 @@
-### This is a YAML-formatted file.
-### Declare variables to be passed into your templates.
+# Default values for canary services.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
-### Default values for sample-bluegreen.
-appName: sample-bluegreen
-namespace: bluegreen
+### Default values for argo-canary.
+appName: argo-canary
+namespace: canary
 env: demodapne2
-
-
-### Argo Rollout auto promote Config
-autoPromotionEnabled: false
 
 
 ### Spring env Config
@@ -51,7 +48,7 @@ serviceAccount:
 ports:
 - name: http
   port: 80
-  targetPort: 5000
+  targetPort: 8080
   protocol: TCP
 
 service:
@@ -112,13 +109,13 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
-    external-dns.alpha.kubernetes.io/hostname: "sample-bluegreen.namejsjeongkr.com"
+    external-dns.alpha.kubernetes.io/hostname: "argo-canary.namejsjeongkr.com"
   hosts:
     - http:
       paths:
         - backend:
             service:
-              name: sample-bluegreen-svc-active
+              name: argo-canary-svc-active
               port:
                 number: 80
   tls: []
@@ -130,3 +127,16 @@ podDisruptionBudget:
   enabled: false
   minAvailable:
   maxUnavailable:
+
+
+# Canary Deployment Strategy
+canary:
+  # deployment steps
+  steps:
+    - setWeight: 20
+    - pause: {}
+    - setWeight: 50
+    - pause: {duration: 5m}
+    - setWeight: 100
+    - pause: {duration: 5m}
+  

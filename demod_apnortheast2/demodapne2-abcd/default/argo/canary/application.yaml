@@ -2,21 +2,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sample-app-bluegreen
+  name: argo-canary
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/namejsjeongkr/devops_k8s_env
     targetRevision: main
-    path: apps/sample-bluegreen/charts
+    path: apps/sample-canary/charts
     helm:
       valueFiles:
-        - ../../../demod_apnortheast2/demodapne2-abcd/default/sample-app/bluegreen/values.yaml
-        - ../../../demod_apnortheast2/demodapne2-abcd/default/sample-app/bluegreen/image.yaml
+        - ../../../demod_apnortheast2/demodapne2-abcd/default/argo/canary/values.yaml
+        - ../../../demod_apnortheast2/demodapne2-abcd/default/argo/canary/image.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: blugreen
+    namespace: canary
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

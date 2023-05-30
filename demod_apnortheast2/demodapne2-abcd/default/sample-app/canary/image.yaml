@@ -1,5 +1,4 @@
-# https://hub.docker.com/r/argoproj/rollouts-demo/tags
-# tag should be one of the red, blue, green, yellow, purple, orange
+# Personal ECR Repo
 image:
-  repository: argoproj/rollouts-demo
+  repository: 086230238707.dkr.ecr.ap-northeast-2.amazonaws.com/sample-app
   tag: 98fbfc01

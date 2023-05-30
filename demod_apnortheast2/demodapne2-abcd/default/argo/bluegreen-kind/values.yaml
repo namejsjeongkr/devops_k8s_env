@@ -1,8 +1,8 @@
 ### This is a YAML-formatted file.
 ### Declare variables to be passed into your templates.
 
-### Default values for sample-bluegreen.
-appName: sample-bluegreen
+### Default values for argo-bluegreen.
+appName: argo-bluegreen
 namespace: bluegreen
 env: demodapne2
 
@@ -34,25 +34,13 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 
-### IRSA Config 
-serviceAccount:
-  enabled: false
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations:
-    eks.amazonaws.com/role-arn: IAM_ROLE_ARN
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-
 ### Pod, Service ports Config
 ports:
 - name: http
   port: 80
-  targetPort: 5000
+  targetPort: 8080
   protocol: TCP
+  type: NodePort
 
 service:
   type: ClusterIP
@@ -93,35 +81,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-
-### Ingress Config
-ingress:
-  enabled: true
-  className: ""
-  annotations:
-    alb.ingress.kubernetes.io/actions.ssl-redirect: >-
-      {"Type": "redirect", "RedirectConfig":{ "Protocol": "HTTPS", "Port":
-      "443", "StatusCode": "HTTP_301"}}
-    alb.ingress.kubernetes.io/certificate-arn: >-
-      arn:aws:acm:ap-northeast-2:086230238707:certificate/27acfc2d-9756-4389-b070-7f952149b37c
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
-    external-dns.alpha.kubernetes.io/hostname: "sample-bluegreen.namejsjeongkr.com"
-  hosts:
-    - http:
-      paths:
-        - backend:
-            service:
-              name: sample-bluegreen-svc-active
-              port:
-                number: 80
-  tls: []
 
 
 # PDB
