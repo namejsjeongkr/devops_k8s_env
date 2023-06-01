@@ -39,6 +39,12 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           {{- end }}
+          {{- if .Values.volume.enabled }}
+          volumeMounts:
+          - name: test
+            mountPath: "/var/run/secret"
+            readOnly: true
+          {{- end }}
           env:
             {{- toYaml .Values.envVars | nindent 12 }}
       {{- if .Values.volume.enabled }}
@@ -48,7 +54,7 @@ spec:
           items:
           - key: test
             path: test
-          secretName: test-secret
+          secretName: test
       {{- end }}
   strategy:
     blueGreen:
