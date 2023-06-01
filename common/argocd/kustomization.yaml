@@ -11,6 +11,9 @@ resources:
   # Create the ingress for argocd 
   - argocd-ingress.yaml
 
+  # Create a external secret to sync the data
+  - external-secrets.yaml
+
   # Register the bootstrap applications 
   - bootstrap.yaml
 patches:

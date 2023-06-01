@@ -41,6 +41,15 @@ spec:
           {{- end }}
           env:
             {{- toYaml .Values.envVars | nindent 12 }}
+      {{- if .Values.volume.enabled }}
+      volumes:
+      - name: test
+        secret:
+          items:
+          - key: test
+            path: test
+          secretName: test-secret
+      {{- end }}
   strategy:
     blueGreen:
       autoPromotionEnabled: {{ .Values.autoPromotionEnabled }}

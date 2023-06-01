@@ -36,3 +36,11 @@ patches:
       kind: Application
       name: bootstrap
     path:  patches/add-bootstrap-variables.yaml
+
+  # Add the service account to external secret to get secret values
+  - target:
+      group: argoproj.io
+      version: v1alpha1
+      kind: Application
+      name: external-secrets
+    path: patches/attach-external-secret-serviceaccount.yaml
