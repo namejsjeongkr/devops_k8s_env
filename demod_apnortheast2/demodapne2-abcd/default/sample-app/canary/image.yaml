@@ -1,4 +1,4 @@
 # Personal ECR Repo
 image:
   repository: 086230238707.dkr.ecr.ap-northeast-2.amazonaws.com/sample-app
-  tag: 2c54b810
+  tag: a2bb1902
