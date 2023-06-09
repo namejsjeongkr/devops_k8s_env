@@ -6,8 +6,10 @@ appName: sample-bluegreen
 namespace: bluegreen
 env: demodapne2
 
+
+### ExternalSecrets TEST
 volume:
-  enabled: true
+  enabled: false
 
 ### Argo Rollout auto promote Config
 autoPromotionEnabled: false
