@@ -16,7 +16,7 @@ spec:
         - ../../../demod_apnortheast2/demodapne2-abcd/default/argo/bluegreen/image.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: blugreen
+    namespace: bluegreen
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
