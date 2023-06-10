@@ -2,17 +2,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-kube-state-metrics
+  name: grafana
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/namejsjeongkr/devops_k8s_env
     targetRevision: main
-    path: apps/prometheus/charts/kube-state-metrics
+    path: apps/grafana/charts
     helm:
       valueFiles:
-        - ../../../../demod_apnortheast2/demodapne2-abcd/prometheus/kube-state-metrics/values.yaml
+        - ../../../demod_apnortheast2/demodapne2-abcd/grafana/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

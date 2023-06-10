@@ -15,7 +15,7 @@ spec:
         - ../../../../demod_apnortheast2/demodapne2-abcd/prometheus/node-exporter/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: prometheus
+    namespace: monitoring
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
