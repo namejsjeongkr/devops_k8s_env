@@ -6,6 +6,8 @@ appName: argo-bluegreen
 namespace: bluegreen
 env: demodapne2
 
+volume:
+  enabled: false
 
 ### Argo Rollout auto promote Config
 autoPromotionEnabled: false
