@@ -12,7 +12,7 @@ volume:
   enabled: false
 
 ### Argo Rollout auto promote Config
-autoPromotionEnabled: false
+autoPromotionEnabled: true
 
 
 ### Spring env Config
