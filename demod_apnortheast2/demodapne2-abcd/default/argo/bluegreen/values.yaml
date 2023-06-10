@@ -18,7 +18,7 @@ envVars:
 
 
 ### Pod Config
-replicaCount: 10
+replicaCount: 3
 
 podAnnotations:
   # sidecar.istio.io/inject: "true"
@@ -28,7 +28,7 @@ podAnnotations:
 ### HPA Config
 autoscaling:
   enabled: false
-  minReplicas: 10
+  minReplicas: 3
   maxReplicas: 20
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
@@ -55,7 +55,7 @@ ports:
   protocol: TCP
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
 
 
@@ -97,31 +97,31 @@ securityContext: {}
 
 ### Ingress Config
 ingress:
-  enabled: true
-  className: ""
-  annotations:
-    alb.ingress.kubernetes.io/actions.ssl-redirect: >-
-      {"Type": "redirect", "RedirectConfig":{ "Protocol": "HTTPS", "Port":
-      "443", "StatusCode": "HTTP_301"}}
-    alb.ingress.kubernetes.io/certificate-arn: >-
-      arn:aws:acm:ap-northeast-2:086230238707:certificate/27acfc2d-9756-4389-b070-7f952149b37c
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
-    external-dns.alpha.kubernetes.io/hostname: "argo-bluegreen.namejsjeongkr.com"
-  hosts:
-    - http:
-      paths:
-        - backend:
-            service:
-              name: argo-bluegreen-svc-active
-              port:
-                number: 80
-  tls: []
+  enabled: false
+  # className: ""
+  # annotations:
+  #   alb.ingress.kubernetes.io/actions.ssl-redirect: >-
+  #     {"Type": "redirect", "RedirectConfig":{ "Protocol": "HTTPS", "Port":
+  #     "443", "StatusCode": "HTTP_301"}}
+  #   alb.ingress.kubernetes.io/certificate-arn: >-
+  #     arn:aws:acm:ap-northeast-2:086230238707:certificate/27acfc2d-9756-4389-b070-7f952149b37c
+  #   alb.ingress.kubernetes.io/healthcheck-path: /
+  #   alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+  #   alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+  #   alb.ingress.kubernetes.io/scheme: internet-facing
+  #   alb.ingress.kubernetes.io/target-type: ip
+  #   kubernetes.io/ingress.class: alb
+  #   alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  #   external-dns.alpha.kubernetes.io/hostname: "argo-bluegreen.namejsjeongkr.com"
+  # hosts:
+  #   - http:
+  #     paths:
+  #       - backend:
+  #           service:
+  #             name: argo-bluegreen-svc-active
+  #             port:
+  #               number: 80
+  # tls: []
 
 
 # PDB
