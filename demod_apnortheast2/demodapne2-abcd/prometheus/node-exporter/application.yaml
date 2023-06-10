@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-node-exporter
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/namejsjeongkr/devops_k8s_env
+    targetRevision: main
+    path: apps/prometheus/charts/node-exporter
+    helm:
+      valueFiles:
+        - ../../../../demod_apnortheast2/demodapne2-abcd/prometheus/node-exporter/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prometheus
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
