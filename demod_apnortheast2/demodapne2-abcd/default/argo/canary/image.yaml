@@ -2,4 +2,4 @@
 # tag should be one of the red, blue, green, yellow, purple, orange
 image:
   repository: argoproj/rollouts-demo
-  tag: yellow
+  tag: purple
