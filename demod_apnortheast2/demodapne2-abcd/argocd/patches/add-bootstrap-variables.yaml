@@ -11,11 +11,9 @@
       repoURL: https://github.com/namejsjeongkr/devops_k8s_env
       targetRevision: main
       ingressACM: arn:aws:acm:ap-northeast-2:086230238707:certificate/27acfc2d-9756-4389-b070-7f952149b37c
-      istio:
-        enabled: true
       karpenter:
         enabled: true
-        queueURL: arn:aws:sqs:ap-northeast-2:086230238707:demodapne2-uuhx-aws-node-termination-handler-queue
+        queueURL: https://sqs.ap-northeast-2.amazonaws.com/086230238707/demodapne2-uuhx-aws-node-termination-handler-queue
       argoRollouts:
         ingressHost: argo-rollouts-demodapne2.namejsjeongkr.com
 - op: add
